@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NovaApp - Analyze food and cosmetic product components from images using AI">
+    <meta name="theme-color" content="#1a73e8">
+    <title>NovaApp - Product Component Analyzer</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">NovaApp</h1>
+                <p class="tagline">Smart Product Component Analysis</p>
+            </div>
+            <button id="langToggle" class="lang-toggle" aria-label="Toggle language">العربية</button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-container">
+                    <div class="upload-box" id="uploadBox">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h2 id="uploadTitle">Upload Product Image</h2>
+                        <p id="uploadDesc">Drag and drop or click to select</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <div class="button-group">
+                        <button id="uploadBtn" class="btn btn-primary" data-en="Upload Image" data-ar="رفع صورة">Upload Image</button>
+                        <button id="cameraBtn" class="btn btn-secondary" data-en="Take Photo" data-ar="التقط صورة">Take Photo</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="spinner"></div>
+                <p id="loadingText" data-en="Analyzing product..." data-ar="جاري تحليل المنتج...">Analyzing product...</p>
+            </div>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <!-- Metadata -->
+                <div class="metadata-card">
+                    <h2 id="productName"></h2>
+                    <div class="score-display">
+                        <div class="safety-score">
+                            <div class="score-circle" id="scoreCircle">
+                                <span class="score-value" id="scoreValue">--</span>
+                                <span class="score-label" id="scoreLabel">Score</span>
+                            </div>
+                        </div>
+                        <div class="integrity-info">
+                            <p id="categoryLabel" data-en="Category:" data-ar="الفئة:"></p>
+                            <p id="categoryValue"></p>
+                            <p id="gradeLabel" data-en="Grade:" data-ar="التقييم:"></p>
+                            <p id="gradeValue" class="grade-badge"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Components Breakdown -->
+                <div class="components-section">
+                    <!-- Positive Components -->
+                    <div id="positiveComponentsContainer" class="component-group" style="display: none;">
+                        <h3 class="component-title positive-title" data-en="✓ Beneficial Components" data-ar="✓ المكونات المفيدة"></h3>
+                        <div id="positiveComponents" class="components-list"></div>
+                    </div>
+
+                    <!-- Negative Components -->
+                    <div id="negativeComponentsContainer" class="component-group" style="display: none;">
+                        <h3 class="component-title negative-title" data-en="⚠ Warning Components" data-ar="⚠ المكونات المحذرة"></h3>
+                        <div id="negativeComponents" class="components-list"></div>
+                    </div>
+
+                    <!-- Questionable Components -->
+                    <div id="questionableComponentsContainer" class="component-group" style="display: none;">
+                        <h3 class="component-title questionable-title" data-en="? Questionable Components" data-ar="? المكونات المشكوك فيها"></h3>
+                        <div id="questionableComponents" class="components-list"></div>
+                    </div>
+                </div>
+
+                <!-- Marketing Integrity Audit -->
+                <div class="marketing-audit-section">
+                    <h3 class="section-title" data-en="Marketing Integrity Analysis" data-ar="تحليل نزاهة التسويق"></h3>
+                    <div id="marketingContent"></div>
+                </div>
+
+                <!-- Expert Verdict -->
+                <div class="verdict-section">
+                    <h3 class="section-title" data-en="Expert Verdict" data-ar="الحكم النهائي"></h3>
+                    <p id="expertVerdict" class="verdict-text"></p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="result-actions">
+                    <button id="newAnalysisBtn" class="btn btn-primary" data-en="Analyze Another Product" data-ar="تحليل منتج آخر">Analyze Another Product</button>
+                    <button id="exportBtn" class="btn btn-secondary" data-en="Export Report" data-ar="تصدير التقرير">Export Report</button>
+                </div>
+            </section>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <p id="errorMessage"></p>
+                <button id="retryBtn" class="btn btn-primary" data-en="Try Again" data-ar="حاول مجددا">Try Again</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p data-en="© 2026 NovaApp. All rights reserved." data-ar="© 2026 NovaApp. جميع الحقوق محفوظة.">© 2026 NovaApp. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Hidden camera input -->
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+
+    <script src="app.js"></script>
+</body>
+</html>
